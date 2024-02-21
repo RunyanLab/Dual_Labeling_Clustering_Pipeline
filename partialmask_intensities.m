@@ -1,4 +1,23 @@
-function [intensities,red_cellocs]= partialmask_intensities(threshold,cell_stat,red_wavelength_stack,final_redidx,max_proj,shift)
+function [intensities,red_cellocs]= partialmask_intensities(threshold,cell_stat,red_wavelength_stack,final_redidx,img,shift)
+% Function that returns the mean intensity for the brightest pixels in each
+% ROI, based on the threshold provideed 
+
+% INPUTS: 
+    % threshold = threshold for pixel inclusion as a percentage 
+    % cell_stat = info about ROI masks 
+    % red_wavelength_stack = matrix of dimensions: pockels x wavelength x Y pixels x X pixels 
+    % final_redidx = final list indicating which neurons are interneurons
+    %   for clustering 
+    % img = structure containing reference images
+    % shift = correction to appropriately correct between different
+    %   registrations of wavelength series and functional imaging
+% OUTPUTS: 
+    % intensities = brightness of ROI at each imaged wavelength and power
+    %   in the wavelength series
+    % red_cellocs = pixels for interneuron ROIs 
+
+% Christian Potter - updated 2/4/2024
+
 %% MKE VARIABLES
 
 red_stat=cell_stat(final_redidx);
@@ -7,7 +26,7 @@ yshift=shift(2);
 
 numred=length(red_stat);
 red_cellocs=nan(512,512,numred);
-
+max_proj=img.max_proj; 
 
 
 %% GET FULL MASKS
@@ -27,8 +46,7 @@ for i = 1 : numred
              curypix=ypix(k);
              if curxpix <512 && curypix<512 && curxpix>0 && curypix>0 % if any pixels have been cutoff by re-registration, just dont include them 
                 mask(curypix+1,curxpix+1)=1;%(curypix,curxpix) to get correct location; add +1 to convert from python to MATLAB
-             end
-             
+             end             
       end
     red_cellocs(:,:,i)=mask;
 
@@ -54,27 +72,19 @@ for i =1:size(red_cellocs,3)
                red_cellocs(j,k,i)=0;
            end
       end
-
    end
-
-
 end
 
 %% make variables for intensities 
 npocks=size(red_wavelength_stack,1);
 nwaves=size(red_wavelength_stack,2);
 
-
 intensities=zeros(length(red_stat),npocks*nwaves);% intensities is a  wavelength x pockel x idx matrix for avg brightness of each red cell
-
 
 temp=zeros(npocks,nwaves);
 
 for idx = 1:length(red_stat)
-
-    cellarea=red_cellocs(:,:,idx);
-    
-    
+    cellarea=red_cellocs(:,:,idx);    
     for p=1:npocks
         for w=1:nwaves
             curstack=squeeze(red_wavelength_stack(p,w,:,:));
@@ -86,7 +96,6 @@ for idx = 1:length(red_stat)
     
     intensities(idx,:) = flat; %organized by p x w
   
-    
 end
 
 end

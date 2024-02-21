@@ -1,11 +1,16 @@
 function []=plot_mask_boundaries(backgroundImage,img_brightness,stat,index,color,varargin)
-% Function that takes the mask coordinates and x/y shift if they are needed
+% Function that plots only the boundaries of the neuron takes the mask coordinates and x/y shift if they are needed
 % and plots them over a background image 
 
 %stat should be the subselection of cells you want to plot 
 
-% IF PLOTTING ON FUNCTIONAL DATA AND NOT W-SERIES REG TIF, XSHIFT AND
-% YSHIFT SHOULD BE 0
+% ** IF PLOTTING ON FUNCTIONAL DATA AND NOT W-SERIES REG TIF, XSHIFT AND
+% YSHIFT SHOULD BE 0 ** 
+
+
+% Christian Potter - updated: 2/2/2024
+
+%%
 
 display_type='imshow'; % default to using imshow
 
@@ -24,13 +29,7 @@ elseif strcmp(display_type,'imshow')
     caxis([0 max(max(backgroundImage))/img_brightness])
 end
 
-
-
-
-
 hold on 
-
-
 
 for i = 1:length(stat)
     curstat=stat{i};
@@ -69,7 +68,7 @@ for i = 1:length(stat)
     xcoords(end)=xcoords(1);
 
     plot(double(xcoords),double(ycoords),color,'LineWidth',2)
-    text(mean(xpix)+5,mean(ypix)+5,num2str(index(i)),'Color',color)
+    text(mean(xpix)+5,mean(ypix)+5,num2str(index(i)),'Color',color) % make text of ROI index 
  
 end
 

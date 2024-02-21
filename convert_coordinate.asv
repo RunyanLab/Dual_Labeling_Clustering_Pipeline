@@ -1,24 +1,17 @@
 function[converted_coord]=convert_coordinate(idx,conv_type,Fall)
-% Function that converts between 3 kinds of cellID coordinates: 
+% Function that converts between 3 kinds of indices: 
 % 1. s2p index containing all ROIs
 % 2. iscell == 1 index, containing only manually selected ROIs that appear
 %   to be cells 
 % 3. isred == 1 index, containing only cells that appear to be red from iscell == 1 
-% Useful if you are trying to look up a cell in suite2p
 
+% INPUTS
+%   idx = cell ID in the list 
 
-% INPUTS:
-%   idx = cell ID to convert
-%   conv_type = string that specifies the index
-%   Fall = structure output from suite2p containing information for making
-%       the indices 
-
-% OUTPUTS: 
-%   converted_coord = index of cellID in new coordinate system 
 
 %** RED_CELL_VECT IS A VECTOR OF LENGTH sum(ISCELL==1) 
 % WILL NOT WORK AFTER EXCLUSION STEP
-% COORDINATES ALWAYS IN MATLAB COORDINATES, SUBTRACT 1 FOR S2P
+%  COORDINATES ALWAYS IN MATLAB COORDINATES, SUBTRACT 1 FOR S2P
 
 
 converted_coord=nan(length(idx),1);

@@ -16,58 +16,18 @@ function [red_wavelength_stack,Fall,redcell_vect_init,wsFall] = load_reg_tif_wav
     % of the two red fluorophores 
     %
     % wsFall: .mat output for the wavelength series 
-
-
 warning('off','all')
 
 %% Unpack variables from info structure 
-mouse=info.mouse; 
-date=info.date; 
 pockels=info.pockels; 
 wavelengths=info.total_wavelengths; 
-%xtrafolder=info.xtrafolder; 
-servernum=info.servernum; 
-
-% LOAD_REG_TIF_WAVELENGTH loads suite2p registered tifs saved inside
-% '...mouse\date\W-series\suite2p\plane0\reg_tif\'
-%all_image size is [npock*nwave, 512, 512]
-%red_wavelength_stack is [npock, nwave, 512, 512]
-
-%REV indicates that the red_wavelenghth_stack is organized taking all
-%wavelengths at one pockel 
-
 %% load Fall for functional data 
 disp('Select the folder where the suite2p functional folder is saved...');
 baseFolder = uigetdir;
-
-% if ismac
-%     base_directory= strcat('/Volumes/Runyan2/Connie/RawData/',mouse,'/',date,'/suite2p/plane0/Fall.mat');
-% else
-%     try 
-%         base_directory =  strcat('Y:\Connie\RawData\',mouse,'\',date,'\suite2p\plane0\Fall.mat');
-%     catch
-%         base_directory =  strcat('X:\Connie\RawData\',mouse,'\',date,'\suite2p\plane0\Fall.mat');
-%     end
-% 
-% end 
-
 Fall = load(strcat(baseFolder,'/plane0/Fall.mat'));
-
 %% Load load rcFall 
 disp('Select the folder where the suite2p-redcells folder is saved...');
 baseFolderRed = uigetdir;
-
-% if ismac
-%     redcell_directory= strcat('/Volumes/Runyan2/Connie/RawData/',mouse,'/',date,'/suite2p-redcells/plane0/Fall.mat');
-% else
-%     try
-%         redcell_directory =  strcat('Y:\Connie\RawData\',mouse,'\',date,'\suite2p-redcells\plane0\Fall.mat');
-%     catch
-%         redcell_directory= strcat('X:\Connie\RawData\',mouse,'\',date,'\suite2p-redcells\plane0\Fall.mat');
-%     end
-% 
-% end 
-
 rcFall=load(strcat(baseFolderRed,'/plane0/Fall.mat'));
 %%
 redcells=rcFall.iscell(:,1); 
@@ -77,40 +37,9 @@ redcell_vect_init=redcells==1;
 %% LOAD wsFall
 disp('Select the folder where the suite2p Wseries folder is saved...');
 wsbase_directory = uigetdir;
-
-% if ismac
-%     wsbase_directory= strcat('/Volumes/Runyan2/Connie/RawData/',mouse,'/',date,'/W-series/suite2p/plane0/Fall.mat');
-% else
-%     try
-%         wsbase_directory =  strcat('Y:\Connie\RawData\',mouse,'\',date,'\W-series\suite2p\plane0\Fall.mat');
-%     catch
-%         wsbase_directory =  strcat('X:\Connie\RawData\',mouse,'\',date,'\W-series\suite2p\plane0\Fall.mat');
-%     end
-% 
-% 
-% end 
-
-
 wsFall=load(strcat(wsbase_directory,'/plane0/Fall.mat'));
 
 %% LOAD reg_tif
-
-% if ismac
-%     try
-%         base_directory =  strcat('/Volumes/Runyan2'/Connie/RawData/',mouse,'/',date,'/W-series/suite2p/plane0/reg_tif');
-%     catch
-%         base_directory =  strcat('/Volumes/Runyan3'/Connie/RawData/',mouse,'/',date,'/W-series/suite2p/plane0/reg_tif');
-%     end
-% 
-% else
-%    if servernum==2
-%         base_directory= strcat('Y:\Connie\RawData\',mouse,'\',date,'\W-series\suite2p\plane0\reg_tif');
-%    elseif servernum==3
-%         base_directory=strcat('X:\Connie\RawData\',mouse,'\',date,'\W-series\suite2p\plane0\reg_tif');
-%     end
-% 
-% end
-
 base_directory = strcat(wsbase_directory,'/plane0/reg_tif');
 %% MAKE red_wavelength_stack
 d = dir(base_directory);

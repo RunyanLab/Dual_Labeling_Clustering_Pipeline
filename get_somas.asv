@@ -1,9 +1,7 @@
 function [all_cellocs,cell_stat,redcell_idx]= get_somas(Fall,redcell_idx)
 
-% Function to get 512 x 512 x numcells matrix with each of the soma-masks for
+% objective: get 512x512xnumcells matrix with each of the soma-masks for
 % the cells 
-
-% Christian Potter - updated 2/6/2024
 
 stat=Fall.stat;
 iscell=Fall.iscell;
@@ -33,5 +31,8 @@ for i = 1 : numcells
     all_cellocs(:,:,i)=mask;
 
 end
+
+
+red_cellocs=all_cellocs(:,:,redcell_idx);
 
 

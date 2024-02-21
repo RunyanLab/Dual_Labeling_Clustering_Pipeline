@@ -1,0 +1,23 @@
+# Dual_Labeling_Clustering_Pipeline
+
+Analysis pipeline to discriminate between tdTomato and mCherry fluorophores
+used in "Simultaneous interneuron labeling reveals population-level 
+interactions among parvalbumin, somatostatin, and pyramidal neurons in 
+cortex" 
+
+%% Background
+info here about "functional" , "wavelength series" etc 
+mention iscell==1 coordinate information 
+mention why we use many different powers
+
+mention why we try different combinations 
+
+
+run_dualred.m is the central script to run the pipeline. 
+
+
+
+%% To Add
+% mention that a lot of the code is just to plot things for a sanity check 
+
+mention that for determining uncertain cells, we go into 

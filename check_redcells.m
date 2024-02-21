@@ -1,19 +1,31 @@
 function[]= check_redcells(redcell_vect,cell_stat,img,thresholds,shift)
+% Function that plots interneurons and pyramidal neurons on the short and
+% long wavelength images to make sure only the interneurons (mask outlines
+% labeled in red) are plotted on bright spots. 
+
+% INPUTS: 
+    % redcell_vect = logical vector indicating a cell is an interneuron in iscell == 1 coordinates
+    % cell_stat = contains the information about masks of each cell
+    % img = structure with reference images
+    % thresholds = adjust the brightness of each background
+    % shift = correction between different registrations of wavelength
+    %   series and functional imaging 
+
+% OUTPUTS: 
+    % currently labeled interneurons are plotted in red and currently
+    % labeled pyramidal neurons are plotted in green over a long wavelength
+    % and short wavelength image 
+
+% Christian Potter - Last updated 2/4/2024
+
+%% MAKE VARIABLES
 
 xshift=shift(1);
 yshift=shift(2); 
-
-
-
 cellstat_ids=1:length(cell_stat);
-
-
-%%
+%% PLOT INTERNEURONS ON SHORT WAVELENGTH IMAGE 
 figure
-
-
 subplot(1,2,1)
-%redcells on short image 
 
 imshow(img.short)
 caxis([0 max(max(img.short))/thresholds(1)])
@@ -21,8 +33,6 @@ hold on
 
 red_stat=cell_stat(redcell_vect); 
 red_ids=cellstat_ids(redcell_vect);
-
-
 
 for i = 1:length(red_stat)
     curstat=red_stat{i};
@@ -54,10 +64,7 @@ for i = 1:length(red_stat)
  
 end
 
-
-
-%%
-%PLOT GREEN CELLS 
+%% PLOT PYRAMIDAL CELLS ON SHORT WAVELENGTH IMAGE 
 
 green_stat=cell_stat(redcell_vect==0); 
 
@@ -105,11 +112,7 @@ end
 
 
 title('Short Wavelength Image')
-%%
-%LONG IMAGE REDCELLS
-
-
-
+%% PLOT INTERNEURONS ON LONG WAVELENGTH IMAGE
 
 subplot(1,2,2)
 %redcells on short image 
@@ -152,11 +155,7 @@ for i = 1:length(red_stat)
     text(mean(xpix)+5,mean(ypix)+5,num2str(red_ids(i)),'Color','r')
  
 end
-
-
-
-%%
-%LONGIMAGE GREEN CELLS 
+%% PLOT PYRAMIDAL CELLS ON LONG WAVELENGTH IMAGE 
 
 green_stat=cell_stat(redcell_vect==0); 
 green_ids=cellstat_ids(redcell_vect==0);

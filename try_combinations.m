@@ -43,7 +43,6 @@ end
 
 combination_results.identities=identities; 
 combination_results.sumds=sumds; 
-combinations_info.centroids=centroids; 
 combination_results.mean_silhouettes=mean_silhouettes; 
 combination_results.all_silhouettes=all_silhouettes; 
 combination_results.centroids=centroids; 

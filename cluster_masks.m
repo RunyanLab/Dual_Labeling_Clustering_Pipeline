@@ -1,9 +1,29 @@
-function [fullD_results] = cluster_masks (intensities,red_vect,flatwave_identities,info,img,red_cellocs)
+function [fullD_results] = cluster_masks (intensities,red_vect,meanwave_identities,info,img,red_cellocs)
+% Function that clusters based on all imaged wavelengths and plots results
+% of clustering on reference image 
 
-mean_image=img.sum_proj; % change if you want a different image 
+% INPUTS: 
+%   intensities = matrix of dimensions cell x wavelength containing the
+%       information about the mean intensity of each ROI at each wavelength 
+%   red_vect = vector containing information about which cells of 
+%       iscell == 1 indices is a red cell 
+%   meanwave_identitites = list containg xaxis labels for plotting for each
+%       wavelength 
+%   info = structure with imaging info
+%   img = structure with reference images 
+%   red_cellocs = array with dimensions ypix x xpix x cellid containing the
+%       pixels in the mask of each red cell 
 
-numpocks=length(info.pockels);
-numwaves=length(info.wavelengths);
+% OUTPUTS: 
+%   fullD_results = structure containing the clustering results, including
+%       the silhouette scores, centroids of the clusters describing the
+%       mean intensitiy values at each wavelength across all of the ROIs
+%       in a cluster 
+
+%   Christian Potter - last updated: 2/5/2024
+
+mean_image=img.sum_proj; % change if you want a different reference image 
+
 mouse=info.mouse;
 date=info.date; 
 
@@ -13,15 +33,8 @@ t=[mouse,' ',date,': All Wavelengths'];
 %% NORMALIZE INTENSITIES / RUN KMEANS
 
 red_idx=cell_idx(red_vect);
-
-norm_intensities=nan(size(intensities,1),size(intensities,2));
-
 norm_intensities=normr(intensities);
-
 [ident,centroids,sumd,alldistances]= kmeans(norm_intensities, 2,'Replicates',100,'MaxIter',10000);
-
-
-
 %% OUTPUT SILHOUETTE SCORES
 
 silhouettes=get_silhouettes(alldistances,ident);
@@ -34,18 +47,15 @@ if mean(group1(:,1)) > mean(group2(:,1))
 else
     g1_ident='tdTomato';
     g2_ident='mCherry';
-
 end
 
 ident_order={g1_ident,g2_ident};
-
 %% MAKE FIGURE DISPLAYING WHICH CELLS WERE SORTED INTO WHICH CLUSTER 
-
 figure('Color','w')
 imshow(mean_image);
 caxis([0 mean(mean(mean_image))*4])
 hold on 
-textshiftx=5;
+textshiftx=5; % can change if you want the text offset to be different 
 textshifty=5;
 
 for i = 1: size(red_cellocs,3)
@@ -74,47 +84,35 @@ for i = 1: size(red_cellocs,3)
                 plot(curx,cury,'.',"color",'g')
                 text(mean(curx)+textshiftx,mean(cury)+textshifty,num2str(red_idx(i)),'Color','g')
                 hold off 
-        end
-  
+        end  
 end
-
 title(t);
 subtitle('mcherry = red || tdtomato= green');
-
 %% PLOT INTENSITIES BY CLUSTER 
-
 figure('Color','w');
 hold on
 for clust = 1:2
+    
     subplot(2,1,clust)
-   
     group = norm_intensities(ident==clust,:)';
     plot(group,'LineWidth',1);
-   
-    
-    
     xticks(1:size(norm_intensities,2))
-    xticklabels(flatwave_identities(1:end))
+    xticklabels(meanwave_identities(1:end))
     %xline(1:size(norm_intensities,2),'LineStyle','--')
     ylabel('Normalized Intensity')
 
     if clust==2
         xlabel ('Wavelength')
     end
-
  
     if clust==1
        title(g1_ident)
     else
        title(g2_ident)
     end
-
-
 end
 sgtitle(t)
-
-
-%% CHANGE IDENTITY SO THAT MCHERRY = 1
+%% CHANGE IDENTITY VALUES SO THAT MCHERRY ALWAYS EQUALS 1
 
 if strcmp(ident_order{1},'tdTomato')
     for id= 1:length(ident)
@@ -126,19 +124,12 @@ if strcmp(ident_order{1},'tdTomato')
         end
     end
 end
-
 %% MAKE STRUCTURE
-
-
 fullD_results.ident=ident; 
 fullD_results.centroids=centroids; 
 fullD_results.sumd=sumd; 
 fullD_results.alldistances=alldistances; 
 fullD_results.silhouettes=silhouettes; 
-
-
-
-
 end
 
 
